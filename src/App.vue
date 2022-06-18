@@ -1,9 +1,13 @@
 <template>
-    <p>{{picked}}</p>
-    <div
+    <p> Вызов {{picked}}</p>
+    <div class="levels"
         v-for="level in levels"
         :key="level.name"
     >
+        <input type="radio"
+            v-model="elevator.currentLvl" 
+            :value="level.value"
+        >
         <input type="radio"
             v-model="picked" 
             :id="level.name"
@@ -12,6 +16,8 @@
         >
         <label :for="level.name">{{level.name}}</label>
     </div>
+    <p> Текущий {{elevator.currentLvl}}</p>
+
 </template>
 
 <script>
@@ -26,7 +32,12 @@ export default {
                 {name: 'Five',value: 5}
             ],
             picked: 1,
-            callStack: []
+            callStack: [],
+            elevator: {
+                action: 'ready',
+                currentLvl: 1,
+                targetLvl: 1
+            }
         }
     },
     methods: {
@@ -41,7 +52,21 @@ export default {
                 this.callStack.push(this.picked);
                 console.log(`Вызов на ${this.picked} этаж`);
                 console.log(`Очередь вызовов ${this.callStack}`);
+                if(this.elevator.action === 'ready') {
+                    this.elevator.targetLvl = this.callStack[0];
+                }
             }
+        }
+    },
+    watch: {
+        elevator: {
+            handler(val, oldVal) {
+                if(this.elevator.targetLvl !== this.elevator.currentLvl) {
+                    this.elevator.currentLvl = this.elevator.targetLvl
+                    this.callStack.shift();
+                }
+            },
+            deep: true
         }
     }
 }
