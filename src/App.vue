@@ -2,6 +2,7 @@
     <elevator
         :levels="levels"
         :call="callStack[0]"
+        @call-complete="shiftStack"
     />
     <levels
        :model-value="picked"
@@ -43,6 +44,7 @@ export default {
         shiftStack() {
             console.log('Удаление первого элемента массива')
             this.callStack.shift();
+            console.log(this.callStack)
         }
     }
 }

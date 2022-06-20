@@ -25,20 +25,37 @@ export default {
                 action: 'ready',
                 currentLvl: 1,
                 targetLvl: null
-            }
+            },
+            interval: null
         }
     },
     methods: {
-        move() {
-
+        move(k) {
+            this.interval = setInterval(() => {
+                if(this.elevator.targetLvl === this.elevator.currentLvl) {
+                    this.elevator.action = 'rest';
+                } else {
+                    this.elevator.currentLvl += k;
+                }
+            }, 1000)
         },
         handler() {
             switch(this.elevator.action) {
+                case 'ready':
+                    console.log('ready');
+                    this.$emit('call-complete');
+                    break;
                 case 'move':
                     console.log('move');
+                    let k = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
+                    this.move(k);
                     break;
                 case 'rest':
                     console.log('rest');
+                        clearInterval(this.interval);
+                        this.interval = setTimeout(() => {
+                            this.elevator.action = 'ready';
+                        }, 5000);
                     break;
             }
         }
@@ -48,8 +65,10 @@ export default {
             this.handler();
         },
         call() {
-            this.elevator.targetLvl = this.call;
-            this.elevator.action = 'move';
+            if(this.elevator.action === 'ready' && !isNaN(this.call)) {
+                this.elevator.targetLvl = this.call;
+                this.elevator.action = 'move';
+            }
         },
     }
 }
