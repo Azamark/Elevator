@@ -28,16 +28,16 @@ export default {
                 currentLvl: 1,
                 targetLvl: null
             },
-            interval: null
+            timer: null
         }
     },
     methods: {
-        move(k) {
-            this.interval = setInterval(() => {
+        move(coef) {
+            this.timer = setInterval(() => {
                 if(this.elevator.targetLvl === this.elevator.currentLvl) {
                     this.elevator.action = 'rest';
                 } else {
-                    this.elevator.currentLvl += k;
+                    this.elevator.currentLvl += coef;
                 }
             }, 1000)
         },
@@ -49,22 +49,36 @@ export default {
                     break;
                 case 'move':
                     console.log('move');
-                    let k = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
-                    this.move(k);
+                    let coef = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
+                    this.move(coef);
                     break;
                 case 'rest':
                     console.log('rest');
-                        clearInterval(this.interval);
-                        this.interval = setTimeout(() => {
+                        clearInterval(this.timer);
+                        this.timer = setTimeout(() => {
                             this.elevator.action = 'ready';
                         }, 3000);
                     break;
             }
         }
     },
+    mounted() {
+        if(localStorage.getItem('elevator.currentLvl')) {
+           try {
+                this.elevator.currentLvl = JSON.parse(localStorage.getItem('elevator.currentLvl'))
+            } catch (e) {
+                localStorage.removeItem('elevator.currentLvl');
+            }
+        }
+    },
     watch: {
         'elevator.action'() {
             this.handler();
+        },
+        'elevator.currentLvl'() {
+            console.log('сохраняем значение elevator.currentLvl')
+            const parsed = JSON.stringify(this.elevator.currentLvl);
+            localStorage.setItem('elevator.currentLvl', parsed);
         },
         call() {
             if(this.elevator.action === 'ready' && !isNaN(this.call)) {

@@ -6,7 +6,6 @@
             @call-complete="shiftStack"
         />
         <levels
-            :model-value="picked"
             :levels="levels"
             @selected="pushStack"
         />
@@ -20,7 +19,6 @@ export default {
     components: {Levels, Elevator},
     data() {
         return { 
-            picked: 1,
             callStack: [],
             levels: [
                 {name: 'One', value: 1},
@@ -47,6 +45,25 @@ export default {
             console.log('Удаление первого элемента массива')
             this.callStack.shift();
             console.log(this.callStack)
+        }
+    },
+    mounted() {
+        if(localStorage.getItem('callStack')) {
+            try {
+                this.callStack = JSON.parse(localStorage.getItem('callStack'))
+            } catch (e) {
+                localStorage.removeItem('callStack');
+            }
+        }
+    },
+    watch: {
+        callStack: {
+            handler(newVal) {
+                console.log('сохраняем значение callStack')
+                const parsed = JSON.stringify(newVal);
+                localStorage.setItem('callStack', parsed);
+            },
+            deep: true
         }
     }
 }

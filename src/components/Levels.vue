@@ -3,7 +3,7 @@
         <div v-for="level in levels" :key="level.name">
             <input type="radio"
                 :id="level.name"
-                v-model="modelValue"
+                v-model="picked"
                 :value="level.value"
                 @change="selected"
             >
@@ -18,17 +18,31 @@ export default {
         levels: {
             type: Object,
             required: true,
-        },
-        modelValue: [Number],
+        }
     },
     data() {
         return {
-
+            picked: 1,
         }
     },
     methods: {
         selected() {
-            this.$emit("selected", this.modelValue);
+            this.$emit("selected", this.picked);
+        }
+    },
+    mounted() {
+        if(localStorage.getItem('picked')) {
+            try {
+                this.picked = localStorage.getItem('picked')
+            } catch (e) {
+                localStorage.removeItem('picked');
+            }
+        }
+    },
+    watch: {
+        picked(newVal) {
+            console.log('сохраняем значение picked')
+            localStorage.setItem('picked', newVal);
         }
     }
 }
