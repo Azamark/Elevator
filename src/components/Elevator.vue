@@ -1,9 +1,11 @@
 <template>
-    <div v-for="level in levels" :key="level.name">
-        <input type="radio"
-            v-model="this.elevator.currentLvl"
-            :value="level.value"
-        >
+    <div class="elevator">
+        <div v-for="level in levels" :key="level.name">
+            <input type="radio"
+                v-model="this.elevator.currentLvl"
+                :value="level.value"
+            >
+        </div>
     </div>
 </template>
 
@@ -55,7 +57,7 @@ export default {
                         clearInterval(this.interval);
                         this.interval = setTimeout(() => {
                             this.elevator.action = 'ready';
-                        }, 5000);
+                        }, 3000);
                     break;
             }
         }

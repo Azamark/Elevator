@@ -1,14 +1,16 @@
 <template>
-    <elevator
-        :levels="levels"
-        :call="callStack[0]"
-        @call-complete="shiftStack"
-    />
-    <levels
-       :model-value="picked"
-       :levels="levels"
-       @selected="pushStack"
-    />
+    <div class="entrance entrance-box container">
+        <elevator
+            :levels="levels"
+            :call="callStack[0]"
+            @call-complete="shiftStack"
+        />
+        <levels
+            :model-value="picked"
+            :levels="levels"
+            @selected="pushStack"
+        />
+    </div>
 </template>
 
 <script>
