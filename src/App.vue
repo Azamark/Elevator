@@ -1,4 +1,8 @@
 <template>
+    <elevator
+        :levels="levels"
+        :call="callStack[0]"
+    />
     <levels
        :model-value="picked"
        :levels="levels"
