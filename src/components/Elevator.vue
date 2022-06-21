@@ -17,27 +17,26 @@ export default {
             required: true,
         },
         levels: {
+            type: Array,
+            required: true,
+        },
+        elevator: {
             type: Object,
             required: true,
         }
     },
     data() {
         return {
-            elevator: {
-                action: 'ready',
-                currentLvl: 1,
-                targetLvl: null
-            },
-            interval: null
+            timer: null
         }
     },
     methods: {
-        move(k) {
-            this.interval = setInterval(() => {
+        move(coef) {
+            this.timer = setInterval(() => {
                 if(this.elevator.targetLvl === this.elevator.currentLvl) {
                     this.elevator.action = 'rest';
                 } else {
-                    this.elevator.currentLvl += k;
+                    this.elevator.currentLvl += coef;
                 }
             }, 1000)
         },
@@ -45,20 +44,29 @@ export default {
             switch(this.elevator.action) {
                 case 'ready':
                     console.log('ready');
-                    this.$emit('call-complete');
+                    this.$emit('elevator-ready');
                     break;
                 case 'move':
                     console.log('move');
-                    let k = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
-                    this.move(k);
+                    let coef = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
+                    this.move(coef);
                     break;
                 case 'rest':
                     console.log('rest');
-                        clearInterval(this.interval);
-                        this.interval = setTimeout(() => {
+                        clearInterval(this.timer);
+                        this.timer = setTimeout(() => {
                             this.elevator.action = 'ready';
                         }, 3000);
                     break;
+            }
+        }
+    },
+    mounted() {
+        if(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`)) {
+           try {
+                this.elevator.currentLvl = JSON.parse(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`))
+            } catch (e) {
+                localStorage.removeItem(`elevator.currentLvl-id${this.elevator.id}`);
             }
         }
     },
@@ -66,11 +74,10 @@ export default {
         'elevator.action'() {
             this.handler();
         },
-        call() {
-            if(this.elevator.action === 'ready' && !isNaN(this.call)) {
-                this.elevator.targetLvl = this.call;
-                this.elevator.action = 'move';
-            }
+        'elevator.currentLvl'() {
+            console.log('сохраняем значение elevator.currentLvl')
+            const parsed = JSON.stringify(this.elevator.currentLvl);
+            localStorage.setItem(`elevator.currentLvl-id${this.elevator.id}`, parsed);
         },
     }
 }
