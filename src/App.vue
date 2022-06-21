@@ -7,8 +7,9 @@
             @call-received="shiftStack"
         />
         <levels
-            :levels="levels"
+            :levelsCnt="levelsCnt"
             @selected="pushStack"
+            @levels-ready="getLvlsArray"
         />
     </div>
 </template>
@@ -21,17 +22,15 @@ export default {
     data() {
         return { 
             callStack: [],
-            levels: [
-                {name: 'Five', value: 5},
-                {name: 'Four', value: 4},
-                {name: 'Three', value: 3},
-                {name: 'Two', value: 2},
-                {name: 'One', value: 1}
-            ],
-            elevatorCnt: 1
+            levelsCnt: 7,
+            levels: [],
+            elevatorCnt: 3
         }
     },
     methods: {
+        getLvlsArray($data) {
+            this.levels = $data;
+        },
         pushStack($data) {
             let find =  this.callStack.find(el => {
                 return el === $data

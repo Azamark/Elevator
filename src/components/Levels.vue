@@ -15,20 +15,27 @@
 <script>
 export default {
     props: {
-        levels: {
-            type: Array,
-            required: true,
-        }
+        levelsCnt: [Number],
     },
     data() {
         return {
             picked: 1,
+            levels: [],
         }
     },
     methods: {
         selected() {
             this.$emit("selected", this.picked);
         }
+    },
+    created() {
+        for(let i = 0; i < this.levelsCnt; i++){
+            this.levels.unshift({
+                name: `lvl-${i+1}`,
+                value: i+1
+            })
+        }
+        this.$emit('levels-ready', this.levels);
     },
     mounted() {
         if(localStorage.getItem('picked')) {
