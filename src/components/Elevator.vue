@@ -1,16 +1,21 @@
 <template>
     <div class="elevator">
         <div v-for="level in levels" :key="level.name">
-            <input type="radio"
-                v-model="this.elevator.currentLvl"
-                :value="level.value"
-            >
+            <div class="level level-box" :data-value="this.elevator.currentLvl">
+                <cabin v-show="level.value === this.elevator.currentLvl"
+                    :target="this.elevator.targetLvl"
+                    :state="this.elevator.action"
+                    :direction="coef"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import Cabin from './Cabin.vue';
 export default {
+    components: {Cabin},
     props: {
         call: {
             type: Number,
@@ -27,7 +32,8 @@ export default {
     },
     data() {
         return {
-            timer: null
+            timer: null,
+            coef: null
         }
     },
     methods: {
@@ -48,8 +54,8 @@ export default {
                     break;
                 case 'move':
                     console.log('move');
-                    let coef = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
-                    this.move(coef);
+                    this.coef = this.elevator.targetLvl > this.elevator.currentLvl ? 1 : -1;
+                    this.move(this.coef);
                     break;
                 case 'rest':
                     console.log('rest');
