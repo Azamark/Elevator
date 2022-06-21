@@ -1,9 +1,10 @@
 <template>
     <div class="entrance entrance-box container">
-        <elevator
+        <elevators
+            :elevatorCnt="elevatorCnt"
             :levels="levels"
             :call="callStack[0]"
-            @call-complete="shiftStack"
+            @call-received="shiftStack"
         />
         <levels
             :levels="levels"
@@ -14,19 +15,20 @@
 
 <script>
 import Levels from "./components/Levels.vue"
-import Elevator from "./components/Elevator.vue"
+import Elevators from "./components/Elevators.vue"
 export default {
-    components: {Levels, Elevator},
+    components: {Levels, Elevators},
     data() {
         return { 
             callStack: [],
             levels: [
-                {name: 'One', value: 1},
-                {name: 'Two', value: 2},
-                {name: 'Three', value: 3},
+                {name: 'Five', value: 5},
                 {name: 'Four', value: 4},
-                {name: 'Five', value: 5}
+                {name: 'Three', value: 3},
+                {name: 'Two', value: 2},
+                {name: 'One', value: 1}
             ],
+            elevatorCnt: 1
         }
     },
     methods: {

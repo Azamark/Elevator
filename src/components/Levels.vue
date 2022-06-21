@@ -16,7 +16,7 @@
 export default {
     props: {
         levels: {
-            type: Object,
+            type: Array,
             required: true,
         }
     },

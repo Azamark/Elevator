@@ -17,17 +17,16 @@ export default {
             required: true,
         },
         levels: {
+            type: Array,
+            required: true,
+        },
+        elevator: {
             type: Object,
             required: true,
         }
     },
     data() {
         return {
-            elevator: {
-                action: 'ready',
-                currentLvl: 1,
-                targetLvl: null
-            },
             timer: null
         }
     },
@@ -45,7 +44,7 @@ export default {
             switch(this.elevator.action) {
                 case 'ready':
                     console.log('ready');
-                    this.$emit('call-complete');
+                    this.$emit('elevator-ready');
                     break;
                 case 'move':
                     console.log('move');
@@ -63,11 +62,11 @@ export default {
         }
     },
     mounted() {
-        if(localStorage.getItem('elevator.currentLvl')) {
+        if(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`)) {
            try {
-                this.elevator.currentLvl = JSON.parse(localStorage.getItem('elevator.currentLvl'))
+                this.elevator.currentLvl = JSON.parse(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`))
             } catch (e) {
-                localStorage.removeItem('elevator.currentLvl');
+                localStorage.removeItem(`elevator.currentLvl-id${this.elevator.id}`);
             }
         }
     },
@@ -78,13 +77,7 @@ export default {
         'elevator.currentLvl'() {
             console.log('сохраняем значение elevator.currentLvl')
             const parsed = JSON.stringify(this.elevator.currentLvl);
-            localStorage.setItem('elevator.currentLvl', parsed);
-        },
-        call() {
-            if(this.elevator.action === 'ready' && !isNaN(this.call)) {
-                this.elevator.targetLvl = this.call;
-                this.elevator.action = 'move';
-            }
+            localStorage.setItem(`elevator.currentLvl-id${this.elevator.id}`, parsed);
         },
     }
 }
