@@ -1,7 +1,7 @@
 <template>
     <div class="levels">
-        <div v-for="level in levels" :key="level.name">
-            <input type="radio"
+        <div class="level level-box" v-for="level in levels" :key="level.name">
+            <input type="radio" :color="color"
                 :id="level.name"
                 v-model="picked"
                 :value="level.value"
@@ -21,10 +21,12 @@ export default {
         return {
             picked: 1,
             levels: [],
+            color: 'none'
         }
     },
     methods: {
         selected() {
+            this.color = 'yellow'
             this.$emit("selected", this.picked);
         }
     },

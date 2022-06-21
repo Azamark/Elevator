@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
 .container {
     max-width: 1200px;
     padding: 0 10px;
@@ -13,9 +19,62 @@
 .entrance {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 5px;
 
     &-box {
         padding-top: 10px;
     }
+}
+
+.level {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    &-box {
+        width: 80px;
+        height: 40px;
+        border: 1px solid #000000;
+    }
+}
+
+.cabin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    width: 90%;
+    height: 90%;
+
+    &-direction {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        .arrow-up {
+            transform: rotate(-90deg);
+        }
+
+        .arrow-down {
+            transform: rotate(90deg);
+        }
+    }
+}
+
+.elevator-ready {
+    background-color: none;
+}
+
+.elevator-move {
+    background-color: rgb(28, 92, 201);
+}
+
+.elevator-rest {
+    background-color: rgb(18, 156, 16);
+    animation-name: blink;
+    animation-timing-function: linear;
+    animation-duration: 0.3s;
+    animation-iteration-count: infinite;
 }
