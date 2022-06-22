@@ -1,6 +1,9 @@
 <template>
     <div class="levels">
-        <div class="level level-box" v-for="level in levels" :key="level.name">
+        <div class="level level-box"
+            :class="[level.value === isReadyLvl ? 'lvl-ready' : '']" 
+            v-for="level in levels" :key="level.name"
+        >
             <input type="radio" :color="color"
                 :id="level.name"
                 v-model="picked"
@@ -15,6 +18,7 @@
 <script>
 export default {
     props: {
+        isReadyLvl: [Number],
         levelsCnt: [Number],
     },
     data() {
@@ -26,7 +30,6 @@ export default {
     },
     methods: {
         selected() {
-            this.color = 'yellow'
             this.$emit("selected", this.picked);
         }
     },
@@ -37,7 +40,6 @@ export default {
                 value: i+1
             })
         }
-        this.$emit('levels-ready', this.levels);
     },
     mounted() {
         if(localStorage.getItem('picked')) {

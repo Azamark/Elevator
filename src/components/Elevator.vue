@@ -1,8 +1,8 @@
 <template>
     <div class="elevator">
-        <div v-for="level in levels" :key="level.name">
+        <div v-for="n in levels" :key="n">
             <div class="level level-box" :data-value="this.elevator.currentLvl">
-                <cabin v-show="level.value === this.elevator.currentLvl"
+                <cabin v-if="n === this.elevator.currentLvl"
                     :target="this.elevator.targetLvl"
                     :state="this.elevator.action"
                     :direction="coef"
@@ -17,12 +17,8 @@ import Cabin from './Cabin.vue';
 export default {
     components: {Cabin},
     props: {
-        call: {
-            type: Number,
-            required: true,
-        },
         levels: {
-            type: Array,
+            type: Number,
             required: true,
         },
         elevator: {
@@ -50,7 +46,7 @@ export default {
             switch(this.elevator.action) {
                 case 'ready':
                     console.log('ready');
-                    this.$emit('elevator-ready');
+                    this.$emit('elevator-ready', this.elevator.targetLvl);
                     break;
                 case 'move':
                     console.log('move');
@@ -70,7 +66,8 @@ export default {
     mounted() {
         if(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`)) {
            try {
-                this.elevator.currentLvl = JSON.parse(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`))
+                this.elevator.currentLvl = JSON.parse(localStorage.getItem(`elevator.currentLvl-id${this.elevator.id}`));
+                this.elevator.targetLvl = this.elevator.currentLvl;
             } catch (e) {
                 localStorage.removeItem(`elevator.currentLvl-id${this.elevator.id}`);
             }

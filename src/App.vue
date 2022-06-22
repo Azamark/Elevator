@@ -2,14 +2,13 @@
     <div class="entrance entrance-box container">
         <elevators
             :elevatorCnt="elevatorCnt"
-            :levels="levels"
-            :call="callStack[0]"
-            @call-received="shiftStack"
+            :levelsCnt="levelsCnt"
+            :calls="callStack"
+            @call-completed="delStackEl"
         />
         <levels
             :levelsCnt="levelsCnt"
             @selected="pushStack"
-            @levels-ready="getLvlsArray"
         />
     </div>
 </template>
@@ -22,30 +21,24 @@ export default {
     data() {
         return { 
             callStack: [],
-            levelsCnt: 7,
-            levels: [],
-            elevatorCnt: 3
+            levelsCnt: 9,
+            elevatorCnt: 1
         }
     },
     methods: {
-        getLvlsArray($data) {
-            this.levels = $data;
-        },
-        pushStack($data) {
+        pushStack(data) {
             let find =  this.callStack.find(el => {
-                return el === $data
+                return el === data
             });
             if(find) {
                 console.log('Вызов уже в очереди');
             } else {
-                this.callStack.push($data);
-                console.log(this.callStack);
+                this.callStack.push(data);
             }
         },
-        shiftStack() {
-            console.log('Удаление первого элемента массива')
-            this.callStack.shift();
-            console.log(this.callStack)
+        delStackEl(data) {
+            let index = this.callStack.indexOf(data);
+            this.callStack.splice(index, 1);
         }
     },
     mounted() {
@@ -60,7 +53,6 @@ export default {
     watch: {
         callStack: {
             handler(newVal) {
-                console.log('сохраняем значение callStack')
                 const parsed = JSON.stringify(newVal);
                 localStorage.setItem('callStack', parsed);
             },
