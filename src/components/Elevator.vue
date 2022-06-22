@@ -1,8 +1,8 @@
 <template>
     <div class="elevator">
-        <div v-for="n in levels" :key="n">
+        <div v-for="level in levels" :key="level.name">
             <div class="level level-box" :data-value="this.elevator.currentLvl">
-                <cabin v-if="n === this.elevator.currentLvl"
+                <cabin v-if="level.value === this.elevator.currentLvl"
                     :target="this.elevator.targetLvl"
                     :state="this.elevator.action"
                     :direction="coef"
@@ -18,7 +18,7 @@ export default {
     components: {Cabin},
     props: {
         levels: {
-            type: Number,
+            type: Array,
             required: true,
         },
         elevator: {

@@ -2,13 +2,14 @@
     <div class="entrance entrance-box container">
         <elevators
             :elevatorCnt="elevatorCnt"
-            :levelsCnt="levelsCnt"
-            :calls="callStack"
-            @call-completed="delStackEl"
+            :levels="levels"
+            :calls="callStack[0]"
+            @call-completed="setLvlState($event)"
+            @call-received="handlerReceivedCall"
         />
         <levels
-            :levelsCnt="levelsCnt"
-            @selected="pushStack"
+            :levels="levels"
+            @selected="handlerAddCall"
         />
     </div>
 </template>
@@ -21,25 +22,47 @@ export default {
     data() {
         return { 
             callStack: [],
+            levels: [],
             levelsCnt: 9,
             elevatorCnt: 4
         }
     },
     methods: {
-        pushStack(data) {
-            let find =  this.callStack.find(el => {
-                return el === data
-            });
-            if(find) {
-                console.log('Вызов уже в очереди');
-            } else {
-                this.callStack.push(data);
+        createLvls() {
+            for(let i = 0; i < this.levelsCnt; i++) {
+                this.levels.unshift({
+                    name: `lvl-${i+1}`,
+                    value: i+1,
+                    state: 'none'
+                })
             }
         },
-        delStackEl(data) {
-            let index = this.callStack.indexOf(data);
+        setLvlState(data, comand = 'none') {
+            let findLvl = this.levels.find(el => el.value === data) 
+            if(findLvl) {
+                findLvl.state = comand;
+            }
+        },
+        handlerAddCall(call) {
+            this.setLvlState(call, 'selected');
+            let findCall =  this.callStack.find(el => {
+                return el === call
+            });
+            if(findCall) {
+                console.log('Вызов уже в очереди');
+            } else {
+                this.callStack.push(call);
+                console.log(this.callStack)
+            }
+        },
+        handlerReceivedCall(call) {
+            this.setLvlState(call, 'progress');
+            let index = this.callStack.indexOf(call);
             this.callStack.splice(index, 1);
         }
+    },
+    created() {
+        this.createLvls();
     },
     mounted() {
         if(localStorage.getItem('callStack')) {
@@ -48,6 +71,11 @@ export default {
             } catch (e) {
                 localStorage.removeItem('callStack');
             }
+        }
+    },
+    computed: {
+        lvlsArr() {
+            return this.levels
         }
     },
     watch: {
