@@ -39,6 +39,9 @@ export default {
             }
             this.$emit('call-completed', data);
         },
+        searchClosest() {
+
+        },
         handlerCalls() {
             let filter = this.elevators.filter(el => el.action === 'ready');
             if(filter.length && this.calls.length) {
@@ -49,9 +52,13 @@ export default {
                             this.callCnt += 1;
                             find.action = 'rest';
                         } else {
-                            filter[i].targetLvl = this.calls[i + this.callCnt];
+                            let sort = filter.sort((a, b) => {
+                                return Math.abs(this.calls[i + this.callCnt] - a.currentLvl) - Math.abs(this.calls[i + this.callCnt] - b.currentLvl)
+                            });
+                            console.log(sort);
+                            sort[0].targetLvl = this.calls[i + this.callCnt];
                             this.callCnt += 1;
-                            filter[i].action = 'move'
+                            sort[0].action = 'move'
                         }
                     }
                 }

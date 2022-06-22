@@ -22,7 +22,7 @@ export default {
         return { 
             callStack: [],
             levelsCnt: 9,
-            elevatorCnt: 1
+            elevatorCnt: 4
         }
     },
     methods: {
