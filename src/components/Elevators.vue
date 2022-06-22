@@ -1,10 +1,9 @@
 <template>
     <div v-for="elevator in elevators" :key="elevator.id">
         <elevator
-            :call="call"
-            :levels="levels"
+            :levels="levelsCnt"
             :elevator="elevator"
-            @elevator-ready="handlerCall"
+            @elevator-ready="isElevatorReady"
         />
     </div>
 </template>
@@ -18,27 +17,44 @@ export default {
             type: Number,
             required: true,
         },
-        call: {
-            type: Number,
+        calls: {
+            type: Array,
             required: true,
         },
-        levels: {
-            type: Array,
+        levelsCnt: {
+            type: Number,
             required: true,
         },
     },
     data() {
         return {
+            callCnt: 0,
             elevators: [],
         }
     },
     methods: {
-        handlerCall() {
-            let find = this.elevators.find(el => el.action === 'ready');
-            if(find && !isNaN(this.call)) {
-                find.targetLvl = this.call;
-                this.$emit('call-received');
-                find.action = 'move';
+        isElevatorReady(data) {
+            if (this.callCnt > 0) {
+                this.callCnt -= 1;
+            }
+            this.$emit('call-completed', data);
+        },
+        handlerCalls() {
+            let filter = this.elevators.filter(el => el.action === 'ready');
+            if(filter.length && this.calls.length) {
+                for(let i = 0; i < filter.length; i++) {
+                    if(this.calls[i + this.callCnt]) {
+                        let find = filter.find(el => el.currentLvl === this.calls[i + this.callCnt])
+                        if(find) {
+                            this.callCnt += 1;
+                            find.action = 'rest';
+                        } else {
+                            filter[i].targetLvl = this.calls[i + this.callCnt];
+                            this.callCnt += 1;
+                            filter[i].action = 'move'
+                        }
+                    }
+                }
             }
         }
     },
@@ -47,14 +63,17 @@ export default {
             this.elevators.push({
                 action: 'ready',
                 currentLvl: 1,
-                targetLvl: null,
+                targetLvl: 1,
                 id: i
             })
         }
     },
     watch: {
-        call() {
-            this.handlerCall();
+        calls: {
+            handler(){
+                this.handlerCalls();
+            },
+            deep: true
         },
     }
 }

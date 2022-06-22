@@ -39,6 +39,11 @@
     }
 }
 
+.elevator {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .cabin {
     display: flex;
     justify-content: center;
@@ -61,6 +66,14 @@
             transform: rotate(90deg);
         }
     }
+}
+
+.lvl-picked {
+    background-color: rgb(28, 92, 201);
+}
+
+.lvl-ready {
+    background-color: rgb(18, 156, 16);
 }
 
 .elevator-ready {
