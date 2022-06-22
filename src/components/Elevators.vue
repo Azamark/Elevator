@@ -1,7 +1,7 @@
 <template>
     <div v-for="elevator in elevators" :key="elevator.id">
         <elevator
-            :levels="levelsCnt"
+            :levels="levels"
             :elevator="elevator"
             @elevator-ready="isElevatorReady"
         />
@@ -18,11 +18,11 @@ export default {
             required: true,
         },
         calls: {
-            type: Array,
+            type: Number,
             required: true,
         },
-        levelsCnt: {
-            type: Number,
+        levels: {
+            type: Array,
             required: true,
         },
     },
@@ -34,33 +34,26 @@ export default {
     },
     methods: {
         isElevatorReady(data) {
-            if (this.callCnt > 0) {
-                this.callCnt -= 1;
-            }
             this.$emit('call-completed', data);
+            this.handlerCalls();
         },
-        searchClosest() {
-
+        isCallReceived(data) {
+            this.$emit('call-received', data);
         },
         handlerCalls() {
-            let filter = this.elevators.filter(el => el.action === 'ready');
-            if(filter.length && this.calls.length) {
-                for(let i = 0; i < filter.length; i++) {
-                    if(this.calls[i + this.callCnt]) {
-                        let find = filter.find(el => el.currentLvl === this.calls[i + this.callCnt])
-                        if(find) {
-                            this.callCnt += 1;
-                            find.action = 'rest';
-                        } else {
-                            let sort = filter.sort((a, b) => {
-                                return Math.abs(this.calls[i + this.callCnt] - a.currentLvl) - Math.abs(this.calls[i + this.callCnt] - b.currentLvl)
-                            });
-                            console.log(sort);
-                            sort[0].targetLvl = this.calls[i + this.callCnt];
-                            this.callCnt += 1;
-                            sort[0].action = 'move'
-                        }
-                    }
+            let filter = this.elevators.filter(el => el.action === 'ready')
+            if(filter.length && !isNaN(this.calls)) {
+                let find = filter.find(el => el.currentLvl === this.calls)
+                if(find) {
+                    this.isCallReceived(this.calls);
+                    find.action = 'rest';
+                } else {
+                    let sort = filter.sort((a, b) => {
+                        return Math.abs(this.calls - a.currentLvl) - Math.abs(this.calls - b.currentLvl)
+                    });
+                    sort[0].targetLvl = this.calls;
+                    this.isCallReceived(this.calls)
+                    sort[0].action = 'move'
                 }
             }
         }

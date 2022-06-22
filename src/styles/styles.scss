@@ -39,11 +39,6 @@
     }
 }
 
-.elevator {
-    display: flex;
-    flex-direction: column-reverse;
-}
-
 .cabin {
     display: flex;
     justify-content: center;
@@ -68,12 +63,12 @@
     }
 }
 
-.lvl-picked {
-    background-color: rgb(28, 92, 201);
+.lvl-selected {
+    background-color: rgb(211, 225, 21);
 }
 
-.lvl-ready {
-    background-color: rgb(18, 156, 16);
+.lvl-progress {
+    background-color: rgb(111, 92, 190);
 }
 
 .elevator-ready {
